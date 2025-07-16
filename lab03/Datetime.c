@@ -1,11 +1,11 @@
 #include <stdio.h>
 
 int main(){
-	int d , h , m , s , tmp ;
-	scanf("%d" , &tmp) ;
+	unsigned long long  d , h , m , s , tmp ;
+	scanf("%ulld" , &tmp) ;
 	s = tmp ;
-	d = s / 84600 ;
-	s -= d * 84600 ;
+	d = s / 86400 ;
+	s -= d * 86400 ;
 	h = s / 3600 ;
 	s -= h * 3600 ;
 	m = s / 60 ;
