@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+if [ -z "$1" ]; then
+  echo "Usage: ./cfile.sh <dir/filename>"
+  exit 1
+fi
+
+dir=$(dirname "$1")
+filename=$(basename "$1")
+
+mkdir -p "$dir"
+
+cat > "$dir/$filename.c" <<EOF
+#include <stdio.h>
+
+int main(){
+    return 0;
+}
+EOF
+
+echo "$dir/$filename.c created."
+
