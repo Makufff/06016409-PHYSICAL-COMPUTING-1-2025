@@ -1,52 +1,57 @@
 #include <stdio.h>
 
-#define ll long long
+int main()
+{
+    long time_minutes, time_seconds, total_available_time;
+    int song_count;
 
-int main() {
-    ll time_M, time_can_use;
-    int time_S, song_N;
+    scanf(" %ld . %d", &time_minutes, &time_seconds);
+    scanf(" %d", &song_count);
+    
+    char song_names[song_count][50];
+    long song_durations[song_count];
+    total_available_time = time_minutes * 60 + time_seconds;
 
-    scanf("%lld.%d", &time_M, &time_S);
-    scanf("%d", &song_N);
-
-    char Q[song_N][50];
-    ll T[song_N];
-
-    time_can_use = time_M * 60 + time_S;
-
-    for (int i = 0; i < song_N; i++) {
-        int queue, m, s;
-        scanf(" Queue#%d <|> %[^\n<] <|> %d.%d", &queue, Q[queue - 1], &m, &s);
-        T[queue - 1] = (ll)m * 60 + s;
+    for (int i = 0; i < song_count; i++){
+        int queue_position;
+        long song_minutes;
+        int song_seconds;
+        
+        scanf(" Queue#%d <|>", &queue_position);
+        scanf(" %[^<]", song_names[queue_position - 1]);
+        scanf(" <|>");
+        scanf(" %ld . %d", &song_minutes, &song_seconds);
+        song_durations[queue_position - 1] = song_minutes * 60 + song_seconds;
     }
 
-    ll total = 0;
-    for (int i = 0; i < song_N; i++) total += T[i];
+    long total_playlist_time = 0;
+    for (int i = 0; i < song_count; i++) total_playlist_time += song_durations[i];
+    total_available_time %= total_playlist_time;
 
-    time_can_use %= total;
+    int current_song_index = 0;
 
-    int current = 0;
-    if (time_can_use == 0)
-        current = song_N - 1;
-    else {
-        for (int i = 0; i < song_N; i++) {
-            if (time_can_use < T[i]) {
-                current = i;
-                break;
-            }
-            time_can_use -= T[i];
+    if (total_available_time == 0) current_song_index = song_count - 1;
+
+    while (total_available_time > 0){
+        for (int i = 0; i < song_count; i++)
+        {
+            if (total_available_time <= 0) break;
+            total_available_time -= song_durations[i];
+            current_song_index = i;
         }
     }
 
-    int percent = (int)(((double)(time_can_use) / T[current]) * 100 + 0.5);
-    if (percent == 0) percent = 1;
-    if (percent >= 100) {
-        percent = 100;
-        printf("Song Order: %d\nSong Name: %s\nSong Process: Complete", current + 1, Q[current]);
-    } else {
-        printf("Song Order: %d\nSong Name: %s\nSong Process: %d%%", current + 1, Q[current], percent);
-    }
+    double progress_percentage = (((double)(total_available_time + song_durations[current_song_index]) / song_durations[current_song_index]) * 100);
+    int final_percentage;
+    
+    if (progress_percentage > 0 && progress_percentage < 1) final_percentage = 1;
+    else final_percentage = (int)progress_percentage;
+
+    printf("Song Order: %d\n", current_song_index + 1);
+    printf("Song Name: %s\n", song_names[current_song_index]);
+    
+    if (final_percentage == 100) printf("Song Process: Complete");
+    else printf("Song Process: %d%%", final_percentage);
 
     return 0;
 }
-
